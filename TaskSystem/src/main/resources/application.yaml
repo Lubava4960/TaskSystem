@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: TaskSystem
+  datasource:
+    url: jdbc:postgresql://localhost:5432/TaskSystem
+    username:
+    password:
+
+
+  liquibase:
+    enabled: true
