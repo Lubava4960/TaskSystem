@@ -3,8 +3,9 @@ spring:
     name: TaskSystem
   datasource:
     url: jdbc:postgresql://localhost:5432/TaskSystem
-    username:
-    password:
+    username: postgres
+    password: 4795895q
+    driver-class-name: org.postgresql.Driver
 
 
   liquibase:
