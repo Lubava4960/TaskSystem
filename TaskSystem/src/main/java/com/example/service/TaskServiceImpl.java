@@ -15,15 +15,4 @@ public class TaskServiceImpl implements TaskService {
         taskDao.addTask(taskDto);
 
     }
-
-    //    public List<TaskDto> findAll() {
-//        taskDao.
-//    }
-    @Override
-    public void delete(TaskDto taskDto) {
-        taskDao.deleteTask(taskDto.getId());
-    }
-
-
-
 }
