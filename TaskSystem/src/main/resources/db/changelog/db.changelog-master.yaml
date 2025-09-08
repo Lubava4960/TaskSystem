@@ -2,3 +2,6 @@ databaseChangeLog:
   - include:
       author: Lubava4960
       file: db/changelog/2025_09/01-changelog.sql
+  - include:
+      author: Lubava4960
+      file: db/changelog/2025_09/02-changelog.sql
