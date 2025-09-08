@@ -4,8 +4,12 @@ import com.example.dto.TaskDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 
 @Slf4j
@@ -19,7 +23,7 @@ public class TaskDao {
             
                       WITH new_task AS (
                     INSERT INTO public.task (
-           
+            
                         title,
                         description,
                         user_id,
@@ -35,17 +39,18 @@ public class TaskDao {
 
     public void addTask(TaskDto taskDto) {
         jdbcTemplate.update(INSERT_TASK,
-
                 taskDto.getTitle(),
                 taskDto.getDescription(),
                 taskDto.getUserId(),
                 taskDto.getComment(),
                 taskDto.getUserId());
+
     }
+
     private static final String DELETE_TASK_QUERY = """
-    DELETE FROM public.task
-    WHERE id = ?
-    """;
+            DELETE FROM public.task
+            WHERE id = ?
+            """;
 
     public void deleteTask(Integer taskId) {
         int rowsAffected = jdbcTemplate.update(DELETE_TASK_QUERY, taskId);
@@ -55,8 +60,48 @@ public class TaskDao {
         } else {
             log.info("Задача с ID {} успешно удалена.", taskId);
         }
+
     }
+
+    private final String SELECT_TASK = "SELECT * FROM public.task";
+
+    public List<TaskDto> selectTask() {
+        return jdbcTemplate.query(SELECT_TASK, new TaskRowMapper());
+    }
+
+    private static class TaskRowMapper implements RowMapper<TaskDto> {
+        @Override
+        public TaskDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+            TaskDto task = new TaskDto();
+            task.setId(rs.getInt("id"));
+            task.setTitle(rs.getString("title"));
+            task.setDescription(rs.getString("description"));
+            task.setUserId(java.util.UUID.fromString((rs.getString("user_id"))));
+            task.setComment(rs.getString("comment"));
+
+            return task;
+        }
+    }
+
+    public void updateTask(TaskDto task) {
+        String updateQuery = "UPDATE public.task " +
+                "SET title = ?," +
+                " description = ?," +
+                " user_id = ?::uuid," +
+                " comment = ?" +
+                " WHERE id = ?";
+        jdbcTemplate.update(updateQuery,
+                task.getTitle(),
+                task.getDescription(),
+                task.getUserId().toString(),
+                task.getComment(),
+                task.getId());
+    }
+
 }
+
+
+
 
 
 

@@ -5,6 +5,8 @@ import com.example.dto.TaskDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
@@ -19,5 +21,15 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void delete(TaskDto taskDto) {
         taskDao.deleteTask(taskDto.getId());
+    }
+    @Override
+    public List<TaskDto> findAll() {
+       return taskDao.selectTask();
+
+    }
+    @Override
+    public TaskDto updateTask(TaskDto taskDto){
+        taskDao.updateTask(taskDto);
+        return taskDto;
     }
 }

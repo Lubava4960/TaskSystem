@@ -10,6 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+
+
 @Slf4j
 @RestController
 @RequestMapping("/api/tasks")
@@ -47,4 +51,26 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @Operation(
+            summary = "можно просмотреть задачи ",
+            tags = "Задачи"
+    )
+    @GetMapping("/tasks")
+    public List<TaskDto> getAllTasks() {
+        List<TaskDto> tasks = taskService.findAll();
+        log.info("tasks: {}", tasks);
+        return (tasks);
+    }
+    @Operation(
+            summary = "можно обновить данные по задаче ",
+            description = "введите id задачи ",
+            tags = "Задачи"
+    )
+    @PutMapping("/{id}")
+    public TaskDto updateTask(@PathVariable("id") Integer id, @RequestBody TaskDto task) {
+        task.setId(id);
+        return taskService.updateTask(task);
+
+    }
+
 }
