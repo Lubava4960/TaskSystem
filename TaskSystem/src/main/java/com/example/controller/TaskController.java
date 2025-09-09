@@ -6,12 +6,15 @@ import com.example.service.TaskServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import java.util.UUID;
 
 
 @Slf4j
@@ -72,5 +75,28 @@ public class TaskController {
         return taskService.updateTask(task);
 
     }
-
+    @Operation(
+            summary = "можно получить задачи по id исполнителя ",
+            description = "введите id исполнителя ",
+            tags = "Задачи"
+    )
+    @GetMapping("/user/{userId}")
+    public Page<TaskDto> getTasksByUserId(@PathVariable("userId") UUID userId,
+                                          @RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return taskService.getTasksByUserId(userId, pageable);
+    }
+    @Operation(
+            summary = "можно получить задачи по фамилии исполнителя ",
+            description = "введите id исполнителя ",
+            tags = "Задачи"
+    )
+    @GetMapping("/search")
+    public Page<TaskDto> getTasksByUserLastName(@RequestParam String lastName,
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return taskService.getTasksByUserLastName(lastName, pageable);
+    }
 }

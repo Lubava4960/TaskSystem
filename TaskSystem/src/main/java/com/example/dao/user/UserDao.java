@@ -1,12 +1,18 @@
 package com.example.dao.user;
 
 
+import com.example.dto.TaskDto;
 import com.example.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -26,6 +32,7 @@ public class UserDao {
                                  VALUES (?::uuid, ?, ?)
             
             """;
+
     public void addUser(UserDto userDto) {
         if (userDto.getId() == null) {
             userDto.setId(UUID.randomUUID());
@@ -37,5 +44,23 @@ public class UserDao {
 
     }
 
+    private final String SELECT_USER = "SELECT* FROM public.user";
 
+    public List<UserDto> getAllUsers() {
+        return jdbcTemplate.query(SELECT_USER, new UserRowMapper());
+    }
+
+    private static class UserRowMapper implements RowMapper<UserDto> {
+        @Override
+        public UserDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+            UserDto user = new UserDto();
+
+            user.setFirstName(rs.getString("first_name"));
+            user.setLastName(rs.getString("last_name"));
+            user.setId(java.util.UUID.fromString((rs.getString("id"))));
+
+
+            return user;
+        }
+    }
 }

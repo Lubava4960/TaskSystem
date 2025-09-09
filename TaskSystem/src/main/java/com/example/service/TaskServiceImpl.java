@@ -3,9 +3,12 @@ package com.example.service;
 import com.example.dao.task.TaskDao;
 import com.example.dto.TaskDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +34,13 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto updateTask(TaskDto taskDto){
         taskDao.updateTask(taskDto);
         return taskDto;
+    }
+    @Override
+    public Page<TaskDto> getTasksByUserId(UUID userId, Pageable pageable) {
+        return taskDao.findTasksByUserId(userId, pageable);
+    }
+    @Override
+    public Page<TaskDto> getTasksByUserLastName(String lastName, Pageable pageable) {
+        return taskDao.findTasksByUserLastName(lastName, pageable);
     }
 }

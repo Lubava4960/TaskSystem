@@ -3,6 +3,9 @@ package com.example.dao.task;
 import com.example.dto.TaskDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 
 @Slf4j
@@ -97,7 +101,40 @@ public class TaskDao {
                 task.getComment(),
                 task.getId());
     }
+    public Page<TaskDto> findTasksByUserId(UUID userId, Pageable pageable) {
+        String sql = "SELECT * FROM public.task WHERE user_id = ? ORDER BY id LIMIT ? OFFSET ?";
+        int totalTasks = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM public.task WHERE user_id = ?", Integer.class, userId);
 
+        List<TaskDto> tasks = jdbcTemplate.query(
+                sql,
+                new Object[]{userId, pageable.getPageSize(), pageable.getOffset()},
+                new TaskRowMapper());
+
+        return new PageImpl<>(tasks, pageable, totalTasks);
+    }
+    public Page<TaskDto> findTasksByUserLastName(String lastName, Pageable pageable) {
+
+        String sql = "SELECT t.* FROM public.task t " +
+                "JOIN public.user u ON t.user_id = u.id " +
+                "WHERE u.last_name = ? " +
+                "ORDER BY t.id LIMIT ? OFFSET ?";
+
+
+        int totalTasks = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM public.task t " +
+                        "JOIN public.user u ON t.user_id = u.id " +
+                        "WHERE u.last_name = ?",
+                Integer.class, lastName);
+
+
+        List<TaskDto> tasks = jdbcTemplate.query(
+                sql,
+                new Object[]{lastName, pageable.getPageSize(), pageable.getOffset()},
+                new TaskRowMapper());
+
+
+        return new PageImpl<>(tasks, pageable, totalTasks);
+    }
 }
 
 
