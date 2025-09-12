@@ -7,9 +7,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -28,6 +31,7 @@ public class UserController {
         userService.save(userDto);
         return userDto;
     }
+
     @Operation(
             summary = "можно просмотреть список пользователей  ",
             tags = "Пользователь"
@@ -37,5 +41,22 @@ public class UserController {
         return userService.findAll();
     }
 
+    @Operation(
+            summary = "можно удалить пользователя ",
+            description = "введите id пользователя ",
+            tags = "Пользователь"
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+        try {
+            UserDto userDto = new UserDto();
+            userDto.setId(id);
+            userService.deleteUser(userDto);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error("Ошибка при удалении пользователя: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
 

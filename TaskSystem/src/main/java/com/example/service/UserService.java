@@ -9,4 +9,6 @@ public interface UserService {
     void save(UserDto userDto);
 
     List<UserDto> findAll();
+
+    void deleteUser(UserDto userDto);
 }

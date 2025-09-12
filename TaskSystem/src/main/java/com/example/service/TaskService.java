@@ -18,7 +18,8 @@ public interface TaskService {
 
     TaskDto updateTask(TaskDto taskDto);
 
-    Page<TaskDto> getTasksByUserId(UUID userId, Pageable pageable);
+
+    List<TaskDto> getTasksByUserId(UUID userId, int limit, int offset);
 
     Page<TaskDto> getTasksByUserLastName(String lastName, Pageable pageable);
 }

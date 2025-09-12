@@ -36,11 +36,12 @@ public class TaskServiceImpl implements TaskService {
         return taskDto;
     }
     @Override
-    public Page<TaskDto> getTasksByUserId(UUID userId, Pageable pageable) {
-        return taskDao.findTasksByUserId(userId, pageable);
+    public List<TaskDto> getTasksByUserId(UUID userId, int limit, int offset) {
+        return taskDao.findTasksByUserId(userId, limit, offset);
     }
     @Override
     public Page<TaskDto> getTasksByUserLastName(String lastName, Pageable pageable) {
         return taskDao.findTasksByUserLastName(lastName, pageable);
     }
+
 }

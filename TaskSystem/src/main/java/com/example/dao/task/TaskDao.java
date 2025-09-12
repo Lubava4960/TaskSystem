@@ -101,16 +101,16 @@ public class TaskDao {
                 task.getComment(),
                 task.getId());
     }
-    public Page<TaskDto> findTasksByUserId(UUID userId, Pageable pageable) {
+    public List<TaskDto> findTasksByUserId(UUID userId, int limit, int offset) {
         String sql = "SELECT * FROM public.task WHERE user_id = ? ORDER BY id LIMIT ? OFFSET ?";
         int totalTasks = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM public.task WHERE user_id = ?", Integer.class, userId);
 
         List<TaskDto> tasks = jdbcTemplate.query(
                 sql,
-                new Object[]{userId, pageable.getPageSize(), pageable.getOffset()},
+                new Object[]{userId, limit,  offset},
                 new TaskRowMapper());
 
-        return new PageImpl<>(tasks, pageable, totalTasks);
+        return  (tasks);
     }
     public Page<TaskDto> findTasksByUserLastName(String lastName, Pageable pageable) {
 

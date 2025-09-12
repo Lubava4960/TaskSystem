@@ -81,11 +81,11 @@ public class TaskController {
             tags = "Задачи"
     )
     @GetMapping("/user/{userId}")
-    public Page<TaskDto> getTasksByUserId(@PathVariable("userId") UUID userId,
-                                          @RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return taskService.getTasksByUserId(userId, pageable);
+    public List<TaskDto> getTasksByUserId(@PathVariable("userId") UUID userId,
+                                          @RequestParam(defaultValue = "1") int size,
+                                          @RequestParam(defaultValue = "5") int page) {
+
+        return taskService.getTasksByUserId(userId, size, page );
     }
     @Operation(
             summary = "можно получить задачи по фамилии исполнителя ",
