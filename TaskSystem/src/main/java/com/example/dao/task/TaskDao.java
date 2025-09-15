@@ -33,8 +33,10 @@ public class TaskDao {
                         user_id,
                         "create",
                         "update",
-                        comment
-                    ) VALUES (?, ?, ?::uuid, NOW(), NOW(), ?)
+                        comment,
+                        status,
+                        priority
+                    ) VALUES (?,?, ?::uuid, NOW(), NOW(), ?,?,?)
                     RETURNING id
                 )
                 INSERT INTO public.user_tasks (user_id, task_id)
@@ -43,11 +45,16 @@ public class TaskDao {
 
     public void addTask(TaskDto taskDto) {
         jdbcTemplate.update(INSERT_TASK,
+
                 taskDto.getTitle(),
                 taskDto.getDescription(),
                 taskDto.getUserId(),
                 taskDto.getComment(),
-                taskDto.getUserId());
+
+                taskDto.getStatus().getLabel(),
+                taskDto.getPriority().getValue(),
+                 taskDto.getUserId());
+
 
     }
 
