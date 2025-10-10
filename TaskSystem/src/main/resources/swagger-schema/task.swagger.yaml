@@ -1,0 +1,228 @@
+openapi: 3.0.3
+info:
+  title: Task API
+  description: API для управления задачами
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/tasks
+
+paths:
+  /task:
+    post:
+      summary: "Создание новой задачи"
+      description: "Можно создать новую задачу, введя данные."
+      tags:
+        - Задачи
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '201':
+          description: "Задача создана"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: "Ошибка валидации данных"
+  /{id}:
+    delete:
+      summary: "Удаление задачи"
+      description: "Можно удалить задачу, введя ID задачи."
+      tags:
+        - Задачи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "ID задачи для удаления"
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: "Задача удалена"
+        '404':
+          description: "Задача не найдена"
+        '500':
+          description: "Ошибка при удалении задачи"
+    put:
+      summary: "Обновление данных по задаче"
+      description: "Можно обновить данные по задаче, введя ID задачи."
+      tags:
+        - Задачи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "ID задачи для обновления"
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '200':
+          description: "Задача обновлена"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: "Задача не найдена"
+        '400':
+          description: "Ошибка валидации данных"
+  /tasks:
+    get:
+      summary: "Получение всех задач"
+      tags:
+        - Задачи
+      responses:
+        '200':
+          description: "Список всех задач"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /user/{userId}:
+    get:
+      summary: "Получение задач по ID исполнителя"
+      description: "Можно получить задачи по ID исполнителя."
+      tags:
+        - Задачи
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: "ID исполнителя"
+          schema:
+            type: string
+            format: uuid
+        - name: size
+          in: query
+          required: false
+          description: "Размер страницы"
+          schema:
+            type: integer
+            default: 5
+        - name: page
+          in: query
+          required: false
+          description: "Номер страницы"
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: "Список задач для исполнителя"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /search:
+    get:
+      summary: "Получение задач по фамилии исполнителя"
+      description: "Можно получить задачи по фамилии исполнителя."
+      tags:
+        - Задачи
+      parameters:
+        - name: lastName
+          in: query
+          required: true
+          description: "Фамилия исполнителя"
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: "Номер страницы"
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          description: "Размер страницы"
+          schema:
+            type: integer
+            default: 10
+      responses:
+
+        '200':
+          description: "Страница задач по фамилии исполнителя"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          nullable: true
+          example: 1
+        title:
+          type: string
+          example: "Example Task"
+        description:
+          type: string
+          example: "This is an example task description."
+        userId:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+        comment:
+          type: string
+          example: "This is a comment."
+        status:
+          type: string
+          enum:
+            - PENDING
+            - IN_PROGRESS
+            - COMPLETED
+          example: "PENDING"
+        priority:
+          type: string
+          enum:
+            - LOW
+            - MEDIUM
+            - HIGH
+          example: "MEDIUM"
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+
+

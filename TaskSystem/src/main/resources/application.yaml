@@ -7,6 +7,25 @@ spring:
     password: 4795895q
     driver-class-name: org.postgresql.Driver
 
+server:
+  port: 8080
 
   liquibase:
     enabled: true
+
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGER_UI:true}
+  api-docs:
+    enabled: ${SWAGGER_API_DOCS:true}
+
+
+keycloak:
+  enabled: true
+
+
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:8180/auth/realms/task-realm
