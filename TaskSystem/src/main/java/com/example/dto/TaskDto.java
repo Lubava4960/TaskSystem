@@ -2,7 +2,7 @@ package com.example.dto;
 
 import com.example.enumeration.TaskPriority;
 import com.example.enumeration.TaskStatus;
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

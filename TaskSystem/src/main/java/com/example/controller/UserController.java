@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.dto.UserDto;
 import com.example.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/user")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "task_system_bearer_authentication")
 public class UserController {
     private final UserServiceImpl userService;
 
