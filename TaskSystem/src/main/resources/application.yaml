@@ -22,7 +22,7 @@ spring:
 keycloak:
   enabled: true
 server:
-  port: 8083
+  port: 8087
 
   liquibase:
     enabled: true

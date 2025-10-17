@@ -4,6 +4,7 @@ import com.example.dto.TaskDto;
 
 import com.example.service.TaskServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "task_system_bearer_authentication")
 public class TaskController {
     private final TaskServiceImpl taskService;
 

@@ -1,0 +1,42 @@
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_keycloak
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: keycloak_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  pgadmin:
+      image: dpage/pgadmin4
+      ports:
+        - "5050:80"
+      environment:
+        PGADMIN_DEFAULT_EMAIL: admin@admin.com
+        PGADMIN_DEFAULT_PASSWORD: root
+  keycloak:
+      image: quay.io/keycloak/keycloak:latest
+      container_name: fervent_rosalind
+      command: start-dev
+      ports:
+        - "8081:8080"
+      environment:
+        - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+        - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+        - DB_VENDOR=POSTGRES
+        - DB_ADDR=postgres                      # Имя сервиса PostgreSQL
+        - DB_DATABASE=keycloak_db               # Имя базы данных
+        - DB_USER=admin                       # Имя пользователя, созданного в PostgreSQL
+        - DB_PASSWORD=admin
+      restart: unless-stopped
+
+volumes:
+  postgres_data:
+networks:
+  default:
+    driver: bridge                                 # Используемая сетевая конфигурация
+
