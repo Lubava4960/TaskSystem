@@ -80,6 +80,7 @@ public class TaskDao {
         return jdbcTemplate.query(SELECT_TASK, new TaskRowMapper());
     }
 
+
     private static class TaskRowMapper implements RowMapper<TaskDto> {
         @Override
         public TaskDto mapRow(ResultSet rs, int rowNum) throws SQLException {

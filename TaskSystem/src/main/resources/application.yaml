@@ -6,7 +6,33 @@ spring:
     username: postgres
     password: 4795895q
     driver-class-name: org.postgresql.Driver
-
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: task-system
+            authorization-grant-type: authorization_code
+            client-id: task-system
+            client-secret: secret
+            scope: openid
+        provider:
+          task-system:
+            issuer-uri: http://localhost:8081/realms/task-realm
+keycloak:
+  enabled: true
+server:
+  port: 8087
 
   liquibase:
     enabled: true
+
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGER_UI:true}
+  api-docs:
+    enabled: ${SWAGGER_API_DOCS:true}
+
+
+
+

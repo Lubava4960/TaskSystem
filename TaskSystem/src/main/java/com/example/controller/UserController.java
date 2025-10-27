@@ -1,14 +1,15 @@
 package com.example.controller;
 
-
 import com.example.dto.UserDto;
 import com.example.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/user")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "task_system_bearer_authentication")
 public class UserController {
     private final UserServiceImpl userService;
 
@@ -47,6 +49,7 @@ public class UserController {
             tags = "Пользователь"
     )
     @DeleteMapping("/{id}")
+   // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         try {
             UserDto userDto = new UserDto();

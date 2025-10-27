@@ -4,6 +4,7 @@ import com.example.dto.TaskDto;
 
 import com.example.service.TaskServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "task_system_bearer_authentication")
 public class TaskController {
     private final TaskServiceImpl taskService;
 
@@ -50,7 +52,7 @@ public class TaskController {
             taskService.delete(taskDto);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            System.err.println("Ошибка при удалении задачи: " + e.getMessage());
+            log.error("Ошибка при удалении задачи: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -89,7 +91,7 @@ public class TaskController {
     }
     @Operation(
             summary = "можно получить задачи по фамилии исполнителя ",
-            description = "введите id исполнителя ",
+            description = "введите фамилию исполнителя ",
             tags = "Задачи"
     )
     @GetMapping("/search")
