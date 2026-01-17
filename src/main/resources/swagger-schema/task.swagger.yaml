@@ -4,7 +4,7 @@ info:
   description: API для управления задачами
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/api/tasks
+  - url: http://localhost:8087/api/tasks
 
 paths:
   /task:
@@ -28,7 +28,8 @@ paths:
                 $ref: '#/components/schemas/Task'
         '400':
           description: "Ошибка валидации данных"
-  /{id}:
+
+  /task/{id}:
     delete:
       summary: "Удаление задачи"
       description: "Можно удалить задачу, введя ID задачи."
@@ -48,6 +49,7 @@ paths:
           description: "Задача не найдена"
         '500':
           description: "Ошибка при удалении задачи"
+
     put:
       summary: "Обновление данных по задаче"
       description: "Можно обновить данные по задаче, введя ID задачи."
@@ -77,6 +79,7 @@ paths:
           description: "Задача не найдена"
         '400':
           description: "Ошибка валидации данных"
+
   /tasks:
     get:
       summary: "Получение всех задач"
@@ -158,22 +161,18 @@ paths:
             type: integer
             default: 10
       responses:
-
         '200':
-          description: "Страница задач по фамилии исполнителя"
+          description: "Список задач по фамилии исполнителя"
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Task'
-                  totalPages:
-                    type: integer
-                  totalElements:
-                    type: integer
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '404':
+          description: "Задачи не найдены"
+        '400':
+          description: "Ошибка валидации данных"
 
 components:
   schemas:
@@ -182,47 +181,31 @@ components:
       properties:
         id:
           type: integer
-          nullable: true
-          example: 1
+          description: "Уникальный идентификатор задачи"
         title:
           type: string
-          example: "Example Task"
+          description: "Название задачи"
         description:
           type: string
-          example: "This is an example task description."
+          description: "Описание задачи"
         userId:
           type: string
+          description: "ID пользователя, которому назначена задача"
           format: uuid
-          example: "123e4567-e89b-12d3-a456-426655440000"
         comment:
           type: string
-          example: "This is a comment."
+          description: "Комментарий к задаче"
         status:
           type: string
+          description: "Статус задачи"
           enum:
-            - PENDING
+            - NEW
             - IN_PROGRESS
             - COMPLETED
-          example: "PENDING"
         priority:
           type: string
+          description: "Приоритет задачи"
           enum:
             - LOW
             - MEDIUM
             - HIGH
-          example: "MEDIUM"
-    UserDto:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: "123e4567-e89b-12d3-a456-426655440000"
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-
-

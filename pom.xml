@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.9</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>TaskSystem</artifactId>
@@ -28,6 +28,8 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -39,15 +41,35 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.3.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>3.0.2</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.el</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.6.12</version>
+		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -82,9 +104,19 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>24.0.1</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.dasniko</groupId>
@@ -106,14 +138,33 @@
 			<artifactId>rest-assured</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.1.0.Final</version>
+		</dependency>
 
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>TaskSystem.com.example.TaskSystemApplication</mainClass>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>
@@ -124,53 +175,57 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-
-			</plugin>
-			<plugin>
-				<groupId>org.openapitools</groupId>
-				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>7.2.0</version>
-				<executions>
-<!--					<execution>-->
-<!--						<id>taskSystem</id>-->
-<!--						<goals>-->
-<!--							<goal>generate</goal>-->
-<!--						</goals>-->
-<!--						<configuration>-->
-<!--							<inputSpec>${project.basedir}/src/main/resources/swagger-schema/task.swagger.yaml</inputSpec>-->
-<!--							<generatorName>java</generatorName>-->
-<!--							<modelPackage>ru.task.model</modelPackage>-->
-<!--							<apiPackage>ru.task.api</apiPackage>-->
-<!--							<library>resttemplate</library>-->
-<!--							<generateApiDocumentation>false</generateApiDocumentation>-->
-<!--							<generateModelTests>false</generateModelTests>-->
-<!--							<generateApiTests>false</generateApiTests>-->
-<!--							<configOptions>-->
-<!--								<java8>true</java8>-->
-<!--								<dateLibrary>java8-localdatetime</dateLibrary>-->
-<!--								<serializableModel>true</serializableModel>-->
-<!--								<openApiNullable>false</openApiNullable>-->
-<!--								<addCompileSourceRoot>true</addCompileSourceRoot>-->
-<!--							</configOptions>-->
-<!--						</configuration>-->
-<!--					</execution>-->
-				</executions>
-			</plugin>
-
-
 		</plugins>
-
 	</build>
 
+	<profiles>
+		<profile>
+			<id>generate-spec</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.openapitools</groupId>
+						<artifactId>openapi-generator-maven-plugin</artifactId>
+						<version>7.2.0</version>
+						<executions>
+							<!--		Схема  Task -->
+							<execution>
+								<id>task-system</id>
+
+								<goals>
+									<goal>generate</goal>
+								</goals>
+
+								<configuration>
+									<inputSpec>${project.basedir}/src/main/resources/swagger-schema/task.swagger.yaml
+									</inputSpec>
+
+									<generatorName>spring</generatorName>
+									<modelPackage>ru.task.api</modelPackage>
+									<apiPackage>ru.task.api</apiPackage>
+
+									<supportingFilesToGenerate>true</supportingFilesToGenerate>
+
+									<generateApiDocumentation>false</generateApiDocumentation>
+
+
+									<configOptions>
+										<interfaceOnly>true</interfaceOnly>
+										<skipDefaultInterface>true</skipDefaultInterface>
+
+										<java8>true</java8>-->
+
+										<serializableModel>true</serializableModel>
+										<openApiNullable>false</openApiNullable>
+										<addCompileSourceRoot>true</addCompileSourceRoot>
+									</configOptions>
+								</configuration>
+							</execution>
+
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

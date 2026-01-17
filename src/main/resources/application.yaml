@@ -19,20 +19,17 @@ spring:
         provider:
           task-system:
             issuer-uri: http://localhost:8081/realms/task-realm
+  liquibase:
+    enabled: true
 keycloak:
   enabled: true
 server:
   port: 8087
 
-  liquibase:
-    enabled: true
+
 
 springdoc:
   swagger-ui:
     enabled: ${SWAGGER_UI:true}
   api-docs:
     enabled: ${SWAGGER_API_DOCS:true}
-
-
-
-
